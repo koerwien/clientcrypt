@@ -1,0 +1,28 @@
+{
+  "name": "clientcrypt",
+  "version": "1.0.0",
+  "description": "A minimalistic set of routines that allow password based client-side encryption of data before it is being sent to a remote server",
+  "main": "./dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "start": "npm run clean && rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Tekplace/clientcrypt.git"
+  },
+  "keywords": [
+    "encryption",
+    "security",
+    "nacl",
+    "tweetnacl",
+    "client",
+    "privacy"
+  ],
+  "author": "Martin Koerwien",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Tekplace/clientcrypt/issues"
+  },
+  "homepage": "https://gitlab.com/Tekplace/clientcrypt#readme"
+}
