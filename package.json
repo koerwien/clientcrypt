@@ -24,5 +24,21 @@
   "bugs": {
     "url": "https://gitlab.com/Tekplace/clientcrypt/issues"
   },
-  "homepage": "https://gitlab.com/Tekplace/clientcrypt#readme"
+  "homepage": "https://gitlab.com/Tekplace/clientcrypt#readme",
+  "dependencies": {
+    "base64-js": "^1.5.1",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^11.2.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rollup": "^2.45.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-filesize": "^9.1.1",
+    "rollup-plugin-progress": "^1.1.2",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-uglify-es": "^0.0.1"
+  }
 }
