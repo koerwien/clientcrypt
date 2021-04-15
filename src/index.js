@@ -1,6 +1,8 @@
 const nacl = require('tweetnacl');
 const { toByteArray, fromByteArray } = require('base64-js');
 
+// Basics
+
 const encoder = new TextEncoder('utf-8');
 const decoder =  new TextDecoder('utf-8');
 
@@ -29,9 +31,63 @@ const decrypt = (cypher, key) => {
     return convertToUTF8(messageArray);
 };
 
-const ex = {
+// Application
+
+const encryptWithLoginKey = data => encrypt(data, getLoginEncryptionKey());
+const encryptWithKey = data => encrypt(data, getEncryptionKey());
+const decryptWithKey = cypher => decrypt(cypher, getEncryptionKey());
+
+// Local storage for storing the key
+
+let localStorageNameForKey = 'encryptionKey';
+let localStorageNameForLoginKey = 'loginEncryptionKey';
+
+const namesForKeys = (name1, name2) => {
+    localStorageNameForKey = name1;
+    localStorageNameForSessionKey = name2;
+};
+
+// Setting storage
+const setEncryptionKey = key => localStorage.setItem(localStorageNameForKey, key);
+const setLoginEncryptionKey = key => localStorage.setItem(localStorageNameForLoginKey, key);
+const setEncryptionKeys = key => {
+    setEncryptionKey(key);
+    setLoginEncryptionKey(key);
+}
+
+// Getting from storage
+const getEncryptionKey = () => localStorage.getItem(localStorageNameForKey);
+const getLoginEncryptionKey = () => localStorage.getItem(localStorageNameForLoginKey);
+const getEncryptionKeys = () => ({
+    encryptionKey: getEncryptionKey(),
+    loginEncryptionKey: getLoginEncryptionKey()
+});
+
+// Removing from storage
+const removeEncryptionKeys = () => {
+    localStorage.removeItem(localStorageNameForKey);
+    localStorage.removeItem(localStorageNameForLoginKey);
+}
+
+// Conveniences
+const encryptionKeysDiffer = () => getEncryptionKey() !== getLoginEncryptionKey();
+const useLoginEncryptionKey = () => {
+    setEncryptionKey(getLoginEncryptionKey());
+}
+
+const api = {
     generateKey,
     encrypt,
-    decrypt
+    decrypt,
+    namesForKeys,
+    setEncryptionKey,
+    setLoginEncryptionKey,
+    setEncryptionKeys,
+    getEncryptionKey,
+    getLoginEncryptionKey,
+    getEncryptionKeys,
+    removeEncryptionKeys,
+    encryptionKeysDiffer,
+    useLoginEncryptionKey
 }
-module.exports = ex;
+module.exports = api;
