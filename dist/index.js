@@ -1,5 +1,8 @@
-var clientcrypt = (function () {
-	'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.clientcrypt = factory());
+}(this, (function () { 'use strict';
 
 	function commonjsRequire () {
 		throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
@@ -2573,7 +2576,8 @@ var clientcrypt = (function () {
 	const {
 	  toByteArray,
 	  fromByteArray
-	} = base64Js;
+	} = base64Js; // Basics
+
 	const encoder = new TextEncoder('utf-8');
 	const decoder = new TextDecoder('utf-8');
 
@@ -2602,15 +2606,67 @@ var clientcrypt = (function () {
 	  const messageArray = naclFast.secretbox.open(cypherArrayWithoutNounce, nounce, keyArray);
 	  if (!messageArray) throw new Error("Could not decrypt message");
 	  return convertToUTF8(messageArray);
+	}; // Application
+
+
+	let localStorageNameForKey = 'encryptionKey';
+	let localStorageNameForLoginKey = 'loginEncryptionKey';
+
+	const namesForKeys = (name1, name2) => {
+	  localStorageNameForKey = name1;
+	  localStorageNameForSessionKey = name2;
+	}; // Setting storage
+
+
+	const setEncryptionKey = key => localStorage.setItem(localStorageNameForKey, key);
+
+	const setLoginEncryptionKey = key => localStorage.setItem(localStorageNameForLoginKey, key);
+
+	const setEncryptionKeys = key => {
+	  setEncryptionKey(key);
+	  setLoginEncryptionKey(key);
+	}; // Getting from storage
+
+
+	const getEncryptionKey = () => localStorage.getItem(localStorageNameForKey);
+
+	const getLoginEncryptionKey = () => localStorage.getItem(localStorageNameForLoginKey);
+
+	const getEncryptionKeys = () => ({
+	  encryptionKey: getEncryptionKey(),
+	  loginEncryptionKey: getLoginEncryptionKey()
+	}); // Removing from storage
+
+
+	const removeEncryptionKeys = () => {
+	  localStorage.removeItem(localStorageNameForKey);
+	  localStorage.removeItem(localStorageNameForLoginKey);
+	}; // Conveniences
+
+
+	const encryptionKeysDiffer = () => getEncryptionKey() !== getLoginEncryptionKey();
+
+	const useLoginEncryptionKey = () => {
+	  setEncryptionKey(getLoginEncryptionKey());
 	};
 
-	const ex = {
+	const api = {
 	  generateKey,
 	  encrypt,
-	  decrypt
+	  decrypt,
+	  namesForKeys,
+	  setEncryptionKey,
+	  setLoginEncryptionKey,
+	  setEncryptionKeys,
+	  getEncryptionKey,
+	  getLoginEncryptionKey,
+	  getEncryptionKeys,
+	  removeEncryptionKeys,
+	  encryptionKeysDiffer,
+	  useLoginEncryptionKey
 	};
-	var src = ex;
+	var src = api;
 
 	return src;
 
-}());
+})));

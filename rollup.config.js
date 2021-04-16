@@ -34,7 +34,7 @@ export default {
     output: {
         name: "clientcrypt",
         file: pkg.main,
-        format: 'iife',
+        format: 'umd',
     },
     plugins: pluginOptions
 };
