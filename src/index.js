@@ -11,6 +11,7 @@ const newNonce = () => nacl.randomBytes(nacl.secretbox.nonceLength);
 const generateKey = secret => fromByteArray(nacl.hash(encoder.encode(secret)).subarray(32));
 
 const encrypt = (message, key) => {
+    if ( ! key) key = getEncryptionKey();
     let keyArray = toByteArray(key);
     const nounce = newNonce();
     const messageArray = encoder.encode(message);
@@ -22,6 +23,7 @@ const encrypt = (message, key) => {
 };
 
 const decrypt = (cypher, key) => {
+    if ( ! key) key = getEncryptionKey();
     const keyArray = toByteArray(key);
     const cypherArray = toByteArray(cypher);
     const nounce = cypherArray.slice(0, nacl.secretbox.nonceLength);
@@ -34,8 +36,8 @@ const decrypt = (cypher, key) => {
 // Application
 
 const encryptWithLoginKey = data => encrypt(data, getLoginEncryptionKey());
-const encryptWithKey = data => encrypt(data, getEncryptionKey());
-const decryptWithKey = cypher => decrypt(cypher, getEncryptionKey());
+const encryptWithKey = data => encrypt(data);
+const decryptWithKey = cypher => decrypt(cypher);
 
 // Local storage for storing the key
 

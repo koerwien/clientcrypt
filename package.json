@@ -1,6 +1,6 @@
 {
   "name": "clientcrypt",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A minimalistic set of routines that allow password based client-side encryption of data before it is being sent to a remote server",
   "main": "./dist/index.js",
   "scripts": {

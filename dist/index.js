@@ -2588,6 +2588,7 @@
 	const generateKey = secret => fromByteArray(naclFast.hash(encoder.encode(secret)).subarray(32));
 
 	const encrypt = (message, key) => {
+	  if (!key) key = getEncryptionKey();
 	  let keyArray = toByteArray(key);
 	  const nounce = newNonce();
 	  const messageArray = encoder.encode(message);
@@ -2599,6 +2600,7 @@
 	};
 
 	const decrypt = (cypher, key) => {
+	  if (!key) key = getEncryptionKey();
 	  const keyArray = toByteArray(key);
 	  const cypherArray = toByteArray(cypher);
 	  const nounce = cypherArray.slice(0, naclFast.secretbox.nonceLength);
