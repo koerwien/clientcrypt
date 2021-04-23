@@ -2605,7 +2605,7 @@
 	  if (!key) key = getEncryptionKey();
 	  const keyArray = toByteArray(key);
 	  const nounce = cypherArray.slice(0, naclFast.secretbox.nonceLength);
-	  const cypherArrayWithoutNounce = cypherArray.slice(naclFast.secretbox.nonceLength, cypher.length);
+	  const cypherArrayWithoutNounce = cypherArray.slice(naclFast.secretbox.nonceLength, cypherArray.length);
 	  const messageArray = naclFast.secretbox.open(cypherArrayWithoutNounce, nounce, keyArray);
 	  if (!messageArray) throw new Error("Could not decrypt message");
 	  return convertToUTF8(messageArray);
