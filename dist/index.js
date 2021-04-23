@@ -2596,19 +2596,22 @@
 	  const cypherArray = new Uint8Array(nounce.length + box.length);
 	  cypherArray.set(nounce);
 	  cypherArray.set(box, nounce.length);
-	  return fromByteArray(cypherArray);
+	  return cypherArray;
 	};
 
-	const decrypt = (cypher, key) => {
+	const encrypt64 = (message, key) => fromByteArray(encrypt(message, key));
+
+	const decrypt = (cypherArray, key) => {
 	  if (!key) key = getEncryptionKey();
 	  const keyArray = toByteArray(key);
-	  const cypherArray = toByteArray(cypher);
 	  const nounce = cypherArray.slice(0, naclFast.secretbox.nonceLength);
 	  const cypherArrayWithoutNounce = cypherArray.slice(naclFast.secretbox.nonceLength, cypher.length);
 	  const messageArray = naclFast.secretbox.open(cypherArrayWithoutNounce, nounce, keyArray);
 	  if (!messageArray) throw new Error("Could not decrypt message");
 	  return convertToUTF8(messageArray);
-	}; // Application
+	};
+
+	const decrypt64 = (cypher64, key) => decrypt(toByteArray(cypher64), key); // Application
 
 
 	let localStorageNameForKey = 'encryptionKey';
@@ -2617,7 +2620,7 @@
 	const namesForKeys = (name1, name2) => {
 	  localStorageNameForKey = name1;
 	  localStorageNameForSessionKey = name2;
-	}; // Setting storage
+	}; // Setting localstorage
 
 
 	const setEncryptionKey = key => localStorage.setItem(localStorageNameForKey, key);
@@ -2627,7 +2630,7 @@
 	const setEncryptionKeys = key => {
 	  setEncryptionKey(key);
 	  setLoginEncryptionKey(key);
-	}; // Getting from storage
+	}; // Getting from localstorage
 
 
 	const getEncryptionKey = () => localStorage.getItem(localStorageNameForKey);
@@ -2637,7 +2640,7 @@
 	const getEncryptionKeys = () => ({
 	  encryptionKey: getEncryptionKey(),
 	  loginEncryptionKey: getLoginEncryptionKey()
-	}); // Removing from storage
+	}); // Removing from localstorage
 
 
 	const removeEncryptionKeys = () => {
@@ -2656,6 +2659,8 @@
 	  generateKey,
 	  encrypt,
 	  decrypt,
+	  encrypt64,
+	  decrypt64,
 	  namesForKeys,
 	  setEncryptionKey,
 	  setLoginEncryptionKey,
