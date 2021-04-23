@@ -19,19 +19,22 @@ const encrypt = (message, key) => {
     const cypherArray = new Uint8Array(nounce.length + box.length);
     cypherArray.set(nounce);
     cypherArray.set(box, nounce.length);
-    return fromByteArray(cypherArray)
+    return cypherArray;
 };
 
-const decrypt = (cypher, key) => {
+const encrypt64 = (message, key) => fromByteArray(encrypt(message, key));
+
+const decrypt = (cypherArray, key) => {
     if ( ! key) key = getEncryptionKey();
     const keyArray = toByteArray(key);
-    const cypherArray = toByteArray(cypher);
     const nounce = cypherArray.slice(0, nacl.secretbox.nonceLength);
     const cypherArrayWithoutNounce = cypherArray.slice(nacl.secretbox.nonceLength, cypher.length);
     const messageArray = nacl.secretbox.open(cypherArrayWithoutNounce, nounce, keyArray);
     if (!messageArray) throw new Error("Could not decrypt message");
     return convertToUTF8(messageArray);
 };
+
+const decrypt64 = (cypher64, key) => decrypt(toByteArray(cypher64), key);
 
 // Application
 
@@ -49,7 +52,7 @@ const namesForKeys = (name1, name2) => {
     localStorageNameForSessionKey = name2;
 };
 
-// Setting storage
+// Setting localstorage
 const setEncryptionKey = key => localStorage.setItem(localStorageNameForKey, key);
 const setLoginEncryptionKey = key => localStorage.setItem(localStorageNameForLoginKey, key);
 const setEncryptionKeys = key => {
@@ -57,7 +60,7 @@ const setEncryptionKeys = key => {
     setLoginEncryptionKey(key);
 }
 
-// Getting from storage
+// Getting from localstorage
 const getEncryptionKey = () => localStorage.getItem(localStorageNameForKey);
 const getLoginEncryptionKey = () => localStorage.getItem(localStorageNameForLoginKey);
 const getEncryptionKeys = () => ({
@@ -65,7 +68,7 @@ const getEncryptionKeys = () => ({
     loginEncryptionKey: getLoginEncryptionKey()
 });
 
-// Removing from storage
+// Removing from localstorage
 const removeEncryptionKeys = () => {
     localStorage.removeItem(localStorageNameForKey);
     localStorage.removeItem(localStorageNameForLoginKey);
@@ -81,6 +84,8 @@ const api = {
     generateKey,
     encrypt,
     decrypt,
+    encrypt64,
+    decrypt64,
     namesForKeys,
     setEncryptionKey,
     setLoginEncryptionKey,
