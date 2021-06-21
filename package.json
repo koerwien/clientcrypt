@@ -22,9 +22,9 @@
   "author": "Martin Koerwien",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/Tekplace/clientcrypt/issues"
+    "url": "https://github.com/koerwien/clientcrypt/issues"
   },
-  "homepage": "https://gitlab.com/Tekplace/clientcrypt#readme",
+  "homepage": "https://github.com/koerwien/clientcrypt#readme",
   "dependencies": {
     "base64-js": "^1.5.1",
     "tweetnacl": "^1.0.3"
